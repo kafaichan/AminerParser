@@ -20,7 +20,7 @@ public class WriteFileTask{
 
     public WriteFileTask(){
         authorOutFile = new File(basedestDir + "authors.csv");
-	sqltask = new Write2SQLTask("root","icst");
+	sqltask = new Write2SQLTask("","");
     	
 	if(authorOutFile == null || !authorOutFile.exists()){
             try {

@@ -25,7 +25,7 @@ public class WriteFileTask{
     public WriteFileTask(){
         paperOutFile = new File(basedestDir + "papers.csv");
 	
-	sqltask = new Write2SQLTask("root","icst");
+	sqltask = new Write2SQLTask("","");
     	
 	if(paperOutFile == null || !paperOutFile.exists()){
             try {
