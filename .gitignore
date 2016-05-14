@@ -14,4 +14,9 @@ hs_err_pid*
 After/
 classes/
 *.txt
-AuthorAfter/
+AminerPaperAfter/
+AminerAuthorAfter/
+AminerAuthor2PaperAfter/
+AminerPaperParser/com/kafaichan/util/Write2SQLTask.java
+AminerAuthorParser/com/kafaichan/util/Write2SQLTask.java
+AminerAuthor2PaperParser/com/kafaichan/util/Write2SQLTask.java

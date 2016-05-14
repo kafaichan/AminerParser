@@ -9,10 +9,10 @@ public class Main {
     public static void main(String[] args) {
         Long start = System.currentTimeMillis();
 
-        ReadFileTask readFileTask = new ReadFileTask("AMiner-Author.txt");
-
+        ReadFileTask readFileTask = new ReadFileTask("AMiner-Author2Paper.txt");
         readFileTask.startParse();
 	
+
         System.out.println(System.currentTimeMillis()-start);
         System.out.println("Finish");
 

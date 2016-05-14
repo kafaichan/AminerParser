@@ -79,20 +79,25 @@ public class ReadFileTask {
 
                 String name  = fmatch(name_pattern);
                 if(name == null)continue;
-		name = name.replace("\"","\\\"");
+		name = name.replace("\\","\\\\").replace("\"","\\\"");
 
                 String affiliation = fmatch(affiliation_pattern);
-		if(affiliation != null)affiliation = affiliation.replace("\"","\\\"");
+		if(affiliation != null)affiliation = affiliation.replace("\\","\\\\").replace("\"","\\\"");
 		String pc = fmatch(pc_pattern);
 		String cn = fmatch(cn_pattern);
 		String hi = fmatch(hi_pattern);
 		String pi = fmatch(pi_pattern);
 		String upi = fmatch(upi_pattern);
 		String keyterms = fmatch(keyterm_pattern);
-		if(keyterms != null)keyterms = keyterms.replace("\"","\\\"");
+		if(keyterms != null)keyterms = keyterms.replace("\\","\\\\").replace("\"","\\\"");
                 Person person = new Person(person_id,name,affiliation,pc,cn,hi,pi,upi,keyterms);
-                WriteFileTask.tasks[0].add(person);
- 
+		cnt++;
+		if(cnt % 10000 == 0){
+			WriteFileTask.tasks[0].sqltask.executeBatch();
+			System.out.println(cnt);
+		}
+                WriteFileTask.tasks[0].writeToDisk(person);
+		WriteFileTask.tasks[0].sqltask.insertPerson(person);
            }
         }catch (IOException e) {
             e.printStackTrace();

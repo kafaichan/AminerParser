@@ -1,36 +1,33 @@
 package com.kafaichan.util;
 
-import com.kafaichan.model.Person;
+import com.kafaichan.model.Author2Paper;
 import java.util.ArrayList;
 import java.io.*;
 
 /**
  * Created by kafaichan on 2016/5/12.
  */
-public class WriteFileTask{
+public class WriteFileTask extends Thread{
 
-    private static final String basedestDir = "/home/jiahuichen/AminerData/AminerAuthorAfter/";
-    private File authorOutFile;
+    private static final String basedestDir = "/home/jiahuichen/AminerData/AminerAuthor2PaperAfter/";
+    private File a2pOutFile;
 
     public static WriteFileTask[] tasks = {
         new WriteFileTask()
     };
 
-    public Write2SQLTask sqltask;
 
     public WriteFileTask(){
-        authorOutFile = new File(basedestDir + "authors.csv");
-	sqltask = new Write2SQLTask("root","icst");
+        a2pOutFile = new File(basedestDir + "author2p.csv");
     	
-	if(authorOutFile == null || !authorOutFile.exists()){
+	if(a2pOutFile == null || !a2pOutFile.exists()){
             try {
-                authorOutFile.createNewFile();
+                a2pOutFile.createNewFile();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
 
     private BufferedWriter generateWriter(File file) throws UnsupportedEncodingException, FileNotFoundException {
         FileOutputStream outputStream = null;
@@ -43,34 +40,19 @@ public class WriteFileTask{
 
         return writer;
     }
-    public void writeToDisk(Person p){
+    public void writeToDisk(Author2Paper p){
         BufferedWriter writer;
         writer = null;
         try {
-            writer = generateWriter(authorOutFile);
-	    Integer id = p.getId();
-	    String name = p.getName();
-	    String normalize_name = p.getNormalizeName();
- 	    String affiliation = p.getAffiliation();
-	    String normalize_affiliation = p.getNormalizeAffiliation();
-            Integer pc = p.getPublishedCnt();
-	    Integer tc = p.getTotalCn();
-            Integer hi = p.getHindex();
-            Double pi = p.getPindex();
-	    Double upi = p.getUPIndex();
-            String keyterms = p.getKeyterms();
+            writer = generateWriter(a2pOutFile);
+            Integer author_id = p.getAuthorId();
+	    Integer paper_id = p.getPaperId();
 
-	    String line = String.format("%d,\"%s\",\"%s\",\"%s\",\"%s\",%d,%d,%d,%.4f,%.4f,\"%s\"",id, name==null?"":name,
-		normalize_name==null?"":normalize_name,
-		affiliation==null?"":affiliation,
-		normalize_affiliation==null?"":normalize_affiliation,
-		pc, tc, hi,
-	 	pi, upi,	
-		keyterms==null?"":keyterms
-            );
+	    String line = String.format("%d,%d",author_id,paper_id);
 	    writer.write(line);
 	    writer.newLine();
             writer.flush(); 
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

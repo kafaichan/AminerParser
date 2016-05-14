@@ -3,27 +3,29 @@ package com.kafaichan.util;
 import com.kafaichan.model.Paper;
 import java.util.ArrayList;
 import java.io.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
+import com.kafaichan.util.Write2SQLTask; 
 
 /**
  * Created by kafaichan on 2016/5/12.
  */
-public class WriteFileTask extends Thread{
+public class WriteFileTask{
 
-    private static final String basedestDir = "/home/jiahuichen/AminerData/After/";
-    private ConcurrentLinkedQueue<Paper> linkedList;
+    private static final String basedestDir = "/home/jiahuichen/AminerData/AminerPaperAfter/";
     private File paperOutFile;
     private File refOutFile; 
+
+    public  Write2SQLTask sqltask; 
 
     public static WriteFileTask[] tasks = {
         new WriteFileTask()
     };
 
-
+    
     public WriteFileTask(){
-        linkedList = new ConcurrentLinkedQueue<Paper>();
         paperOutFile = new File(basedestDir + "papers.csv");
-	refOutFile = new File(basedestDir + "refs.csv");
+	
+	sqltask = new Write2SQLTask("root","icst");
     	
 	if(paperOutFile == null || !paperOutFile.exists()){
             try {
@@ -32,7 +34,7 @@ public class WriteFileTask extends Thread{
                 e.printStackTrace();
             }
         }
-  	
+ 	refOutFile = new File(basedestDir + "refs.csv");
 	if(refOutFile == null || !refOutFile.exists()){
             try {
                 refOutFile.createNewFile();
@@ -42,24 +44,6 @@ public class WriteFileTask extends Thread{
         }
     }
 
-    public void add(Paper p){
-        linkedList.offer(p);
-    }
-
-
-    public void run() {
-        while(true){
-            if(!linkedList.isEmpty()){
-                Paper p = linkedList.poll();
-                if(p == null)continue;
-                if(p.getId() == 2092333){
-                    writeToDisk(p);
-                    break;
-                }
-                writeToDisk(p);
-            }
-        }
-    }
 
     private BufferedWriter generateWriter(File file) throws UnsupportedEncodingException, FileNotFoundException {
         FileOutputStream outputStream = null;
@@ -72,7 +56,7 @@ public class WriteFileTask extends Thread{
 
         return writer;
     }
-    private void writeToDisk(Paper p){
+    public void writeToDisk(Paper p){
         BufferedWriter writer, writer1;
         writer = writer1 = null;
         try {
@@ -89,15 +73,15 @@ public class WriteFileTask extends Thread{
 	    String paper_abstract = p.getPaper_abstract();
 	    ArrayList<Integer> refs = p.getRefs();
  
-	    String line = String.format("%d,\"%s\",\"%s\",\"%s\",\"%s\",%s,\"%s\",\"%s\",%s,\"%s\"",id, title==null?"":title,
-		normalize_title==null?"":normalize_title,
-		authors==null?"":authors,
-		affiliations==null?"":affiliations,
+	    String line = String.format("%d,\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"",id, title,
+		normalize_title,
+		authors,
+		affiliations,
 		year==null?"":year,
-		venue==null?"":venue,
-		normalize_venue==null?"":normalize_venue,
+		venue,
+		normalize_venue,
 		venue_id==null?"":venue_id,
-		paper_abstract==null?"":paper_abstract
+		paper_abstract
             );
             writer.write(line);
             writer.newLine();
@@ -110,7 +94,6 @@ public class WriteFileTask extends Thread{
 		writer1.newLine();
 		writer1.flush();	    
 	    }
-	    System.out.println(id);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
